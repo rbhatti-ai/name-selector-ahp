@@ -165,16 +165,144 @@ const initialNames = [
   }
 ];
 
-// AHP Criteria definitions
+// AHP Criteria definitions with detailed info for comparison screen
 const ahpCriteria = [
-  { id: 'syllables', label: 'Syllable Count', description: 'Preference for shorter (1-2) vs longer (3+) syllables', scoreKey: 'syllables', inverse: true },
-  { id: 'characters', label: 'Character Length', description: 'Preference for shorter (4-5) vs longer (7+) character names', scoreKey: 'characters', inverse: true },
-  { id: 'verbScore', label: 'Verb Usability', description: 'How naturally can the name be used as a verb?', scoreKey: 'verbScore', inverse: false },
-  { id: 'brandingScore', label: 'Branding Strength', description: 'Distinctiveness and ownability of the name', scoreKey: 'brandingScore', inverse: false },
-  { id: 'soundScore', label: 'Sound & Phonetics', description: 'How the name sounds — memorability, feel', scoreKey: 'soundScore', inverse: false },
-  { id: 'aiIntegration', label: 'AI Integration', description: 'Does the name clearly communicate AI technology?', scoreKey: 'aiIntegration', inverse: false },
-  { id: 'courtCredibility', label: 'Court Credibility', description: 'How credible does the name sound in legal settings?', scoreKey: 'courtCredibility', inverse: false },
-  { id: 'canadianIdentity', label: 'Canadian Identity', description: 'Does the name resonate with Canadian market?', scoreKey: 'canadianIdentity', inverse: false }
+  {
+    id: 'syllables',
+    label: 'Syllable Count',
+    description: 'Preference for shorter (1-2) vs longer (3+) syllables',
+    scoreKey: 'syllables',
+    inverse: true,
+    theory: 'Optimal: 2 syllables. Research shows 2-syllable names are easiest to remember and say. 1 syllable can feel abrupt, 3+ can be cumbersome.',
+    bestValue: '2 syllables',
+    dataKey: 'syllables',
+    format: (v) => `${v} syllable${v !== 1 ? 's' : ''}`,
+    whyItMatters: 'Syllable count affects how easily people remember and say your name. Too short feels incomplete, too long becomes a mouthful.',
+    examples: {
+      good: ['Google (2)', 'Apple (2)', 'Nike (2)', 'Slack (1)', 'Zoom (1)'],
+      bad: ['Accenture (4)', 'Deloitte (3)']
+    },
+    ourNames: 'HAWK (1), Assay (2), Nordé (2) are optimal. Pinkerton (3), VerifAI (3), CertifAI (3) are longer.'
+  },
+  {
+    id: 'characters',
+    label: 'Character Length',
+    description: 'Preference for shorter (4-5) vs longer (7+) character names',
+    scoreKey: 'characters',
+    inverse: true,
+    theory: 'Optimal: 5-6 characters. Short enough to be memorable, long enough to be distinctive. Under 4 may lack substance, over 8 becomes hard to type/remember.',
+    bestValue: '5-6 characters',
+    dataKey: 'characters',
+    format: (v) => `${v} chars`,
+    whyItMatters: 'Shorter names are easier to type, fit in logos, work as domain names, and are more memorable. But too short can lack distinctiveness.',
+    examples: {
+      good: ['Uber (4)', 'Lyft (4)', 'Slack (5)', 'Stripe (6)'],
+      bad: ['Salesforce (10)', 'Workday (7)']
+    },
+    ourNames: 'HAWK (4), Assay (5), Nordé (5) are ideal. Pinkerton (9) is longest.'
+  },
+  {
+    id: 'verbScore',
+    label: 'Verb Usability',
+    description: 'How naturally can the name be used as a verb?',
+    scoreKey: 'verbScore',
+    inverse: false,
+    theory: 'Higher is better (1-10). Names that work as verbs ("Google it", "Slack me") become part of daily language and drive organic adoption.',
+    bestValue: '9-10 score',
+    dataKey: 'verbScore',
+    format: (v) => `${v}/10`,
+    whyItMatters: 'When people can "verb" your name, it becomes part of their vocabulary. This drives word-of-mouth and makes the brand indispensable.',
+    examples: {
+      good: ['"Google it"', '"Slack me"', '"Uber there"', '"Venmo you"'],
+      bad: ['"Salesforce it"', '"Microsoft that"']
+    },
+    ourNames: '"Hawk that driver" and "Assay the logs" work naturally. "Kepler it" sounds awkward.'
+  },
+  {
+    id: 'brandingScore',
+    label: 'Branding Strength',
+    description: 'Distinctiveness and ownability of the name',
+    scoreKey: 'brandingScore',
+    inverse: false,
+    theory: 'Higher is better (1-10). Measures how unique, ownable, and trademarkable the name is. Generic names score low, distinctive names score high.',
+    bestValue: '9-10 score',
+    dataKey: 'brandingScore',
+    format: (v) => `${v}/10`,
+    whyItMatters: 'A distinctive name is easier to trademark, rank in SEO, and own in customers\' minds. Generic names get lost in the crowd.',
+    examples: {
+      good: ['Xerox (invented)', 'Kodak (invented)', 'Spotify (invented)'],
+      bad: ['General Motors', 'American Airlines', 'United Healthcare']
+    },
+    ourNames: 'Assay (real but unused), Nordé (unique), ProvAI (invented) are highly ownable. HAWK is common.'
+  },
+  {
+    id: 'soundScore',
+    label: 'Sound & Phonetics',
+    description: 'How the name sounds — memorability, feel',
+    scoreKey: 'soundScore',
+    inverse: false,
+    theory: 'Higher is better (1-10). Based on phonetic science: hard consonants (K, T, P) convey precision; soft sounds (S, M, N) convey warmth. Good names have pleasing sound flow.',
+    bestValue: '9-10 score',
+    dataKey: 'soundScore',
+    format: (v) => `${v}/10`,
+    whyItMatters: 'Sound symbolism is real: sharp sounds (K, X) feel precise and cutting-edge. Soft sounds (M, L) feel warm and friendly. The sound should match your brand personality.',
+    examples: {
+      good: ['Krisp (sharp K)', 'Slack (sharp K)', 'Zoom (energetic Z)'],
+      bad: ['Mumble (too soft)', 'Thud (heavy)']
+    },
+    ourNames: 'HAWK has powerful K sound. Nordé flows elegantly. Pinkerton has authority. Assay is approachable.'
+  },
+  {
+    id: 'aiIntegration',
+    label: 'AI Integration',
+    description: 'Does the name clearly communicate AI technology?',
+    scoreKey: 'aiIntegration',
+    inverse: false,
+    theory: 'Names with "AI" built in (VerifAI, ProvAI) instantly communicate tech capability. Hidden AI (Assay) is subtle. No AI may require more brand building.',
+    bestValue: 'Yes — built in',
+    dataKey: 'aiIntegration',
+    format: (v) => v,
+    whyItMatters: 'If AI is your key differentiator, having it in the name instantly communicates your value prop. But it may also date the brand if AI becomes ubiquitous.',
+    examples: {
+      good: ['OpenAI (obvious)', 'Jasper AI', 'Copy.ai'],
+      bad: ['ChatGPT (has it)', 'Notion (hidden)', 'Figma (none)']
+    },
+    ourNames: 'VerifAI, ProvAI, CertifAI have AI built in. Assay hides it (ass-AY). HAWK, Nordé, Kepler have none.'
+  },
+  {
+    id: 'courtCredibility',
+    label: 'Court Credibility',
+    description: 'How credible does the name sound in legal settings?',
+    scoreKey: 'courtCredibility',
+    inverse: false,
+    theory: 'For compliance/legal products, the name must sound authoritative in depositions and court. "Pinkerton detected fraud" sounds more credible than cute/trendy names.',
+    bestValue: 'Very High',
+    dataKey: 'courtCredibility',
+    format: (v) => v,
+    whyItMatters: 'In trucking compliance, your evidence may be used in court. A name that sounds authoritative and scientific carries more weight with judges and juries.',
+    examples: {
+      good: ['"Pinkerton investigation revealed..."', '"Forensic analysis confirmed..."'],
+      bad: ['"Buddy App detected..."', '"QuickCheck found..."']
+    },
+    ourNames: 'Pinkerton (detective heritage) and Assay (scientific term) have very high credibility. HAWK is strong. ProvAI sounds modern but less established.'
+  },
+  {
+    id: 'canadianIdentity',
+    label: 'Canadian Identity',
+    description: 'Does the name resonate with Canadian market?',
+    scoreKey: 'canadianIdentity',
+    inverse: false,
+    theory: 'For Canadian market positioning, names with French influence (Nordé) or Canadian cultural connections score higher. Important if targeting Canadian trucking industry.',
+    bestValue: 'Very High',
+    dataKey: 'canadianIdentity',
+    format: (v) => v,
+    whyItMatters: 'Canada has unique bilingual (French/English) culture. Names that acknowledge this heritage can create stronger emotional connection with Canadian customers.',
+    examples: {
+      good: ['Nordé (French "é")', 'Roots (Canadian brand)', 'Lululemon (Vancouver)'],
+      bad: ['Generic American names']
+    },
+    ourNames: 'Nordé scores highest (French accent, Nord=North). Assay has "ay" sound like "eh". Others are neutral.'
+  }
 ];
 
 // AHP scale descriptions
@@ -393,6 +521,12 @@ export default function Home() {
     </div>
   );
 
+  const [expandedCriteria, setExpandedCriteria] = useState({});
+
+  const toggleCriteriaExpand = (id) => {
+    setExpandedCriteria(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const renderCriteriaSelection = () => (
     <div className="space-y-6">
       <div>
@@ -400,36 +534,127 @@ export default function Home() {
         <p className="text-gray-600">Choose which factors are important for your decision (select at least 2)</p>
       </div>
 
+      {/* Help text */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <div className="flex items-start gap-2">
+          <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h4 className="font-semibold text-amber-900 mb-1">Not sure what these mean?</h4>
+            <p className="text-sm text-amber-800">
+              Click on any criterion below to expand and see detailed explanations, examples from famous brands, and how our candidate names score.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-3">
-        {ahpCriteria.map(criterion => (
-          <label
-            key={criterion.id}
-            className={`block p-4 border rounded-lg cursor-pointer transition-all ${
-              selectedCriteria.find(c => c.id === criterion.id)
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={!!selectedCriteria.find(c => c.id === criterion.id)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedCriteria([...selectedCriteria, criterion]);
-                  } else {
-                    setSelectedCriteria(selectedCriteria.filter(c => c.id !== criterion.id));
-                  }
-                }}
-                className="mt-1 h-5 w-5 text-blue-600"
-              />
-              <div>
-                <div className="font-semibold text-gray-900">{criterion.label}</div>
-                <div className="text-sm text-gray-600">{criterion.description}</div>
+        {ahpCriteria.map(criterion => {
+          const isSelected = !!selectedCriteria.find(c => c.id === criterion.id);
+          const isExpanded = expandedCriteria[criterion.id];
+
+          return (
+            <div
+              key={criterion.id}
+              className={`border rounded-lg transition-all ${
+                isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {/* Main row with checkbox */}
+              <div className="p-4">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedCriteria([...selectedCriteria, criterion]);
+                      } else {
+                        setSelectedCriteria(selectedCriteria.filter(c => c.id !== criterion.id));
+                      }
+                    }}
+                    className="mt-1 h-5 w-5 text-blue-600 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-gray-900">{criterion.label}</div>
+                        <div className="text-sm text-gray-600">{criterion.description}</div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleCriteriaExpand(criterion.id);
+                        }}
+                        className="ml-2 text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+                      >
+                        {isExpanded ? 'Hide' : 'Learn more'}
+                        <svg
+                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Expanded content */}
+              {isExpanded && (
+                <div className="px-4 pb-4 pt-0 ml-8 border-t border-gray-200 mt-2">
+                  <div className="pt-4 space-y-4">
+                    {/* Why it matters */}
+                    <div>
+                      <h5 className="text-sm font-semibold text-gray-800 mb-1">Why It Matters</h5>
+                      <p className="text-sm text-gray-600">{criterion.whyItMatters}</p>
+                    </div>
+
+                    {/* Best value */}
+                    <div className="bg-green-50 rounded-lg p-3">
+                      <span className="text-xs font-semibold text-green-800">OPTIMAL VALUE:</span>
+                      <span className="ml-2 text-sm text-green-700 font-medium">{criterion.bestValue}</span>
+                    </div>
+
+                    {/* Examples */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs font-semibold text-gray-500 mb-2">GOOD EXAMPLES</div>
+                        <div className="flex flex-wrap gap-1">
+                          {criterion.examples.good.map((ex, i) => (
+                            <span key={i} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                              {ex}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs font-semibold text-gray-500 mb-2">LESS IDEAL</div>
+                        <div className="flex flex-wrap gap-1">
+                          {criterion.examples.bad.map((ex, i) => (
+                            <span key={i} className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                              {ex}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Our names */}
+                    <div className="bg-blue-50 rounded-lg p-3">
+                      <div className="text-xs font-semibold text-blue-800 mb-1">YOUR CANDIDATE NAMES</div>
+                      <p className="text-sm text-blue-700">{criterion.ourNames}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </label>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex gap-3">
@@ -471,6 +696,35 @@ export default function Home() {
     const key = `${left.id}-${right.id}`;
     const current = pairwiseComparisons[key] || { value: 1, favor: 'equal' };
 
+    // Helper to render criteria data panel
+    const renderCriteriaDataPanel = (criterion, colorClass) => {
+      const isBlue = colorClass === 'blue';
+      return (
+        <div className={`p-4 rounded-lg border ${isBlue ? 'bg-blue-50 border-blue-200' : 'bg-green-50 border-green-200'}`}>
+          <h4 className={`font-semibold mb-2 ${isBlue ? 'text-blue-800' : 'text-green-800'}`}>
+            {criterion.label}
+          </h4>
+          <div className={`text-xs mb-3 ${isBlue ? 'text-blue-600' : 'text-green-600'}`}>
+            <strong>Best value:</strong> {criterion.bestValue}
+          </div>
+          <p className="text-xs text-gray-600 mb-3">{criterion.theory}</p>
+
+          {/* Show data for all names */}
+          <div className="space-y-1">
+            <div className="text-xs font-semibold text-gray-500 mb-1">How names score:</div>
+            {names.map(n => (
+              <div key={n.id} className="flex justify-between text-xs">
+                <span className="text-gray-700">{n.name}</span>
+                <span className={`font-medium ${isBlue ? 'text-blue-700' : 'text-green-700'}`}>
+                  {criterion.format ? criterion.format(n[criterion.dataKey]) : n[criterion.dataKey]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
     return (
       <div className="space-y-6">
         <div>
@@ -486,71 +740,93 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scale Legend - Collapsible Help */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <div className="flex items-start gap-2">
-            <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <h4 className="font-semibold text-amber-900 mb-2">How to Compare</h4>
-              <p className="text-sm text-amber-800 mb-3">
-                Use the scale below to indicate how much more important one criterion is over the other.
-                Numbers on the <strong>left</strong> favor the left criterion, numbers on the <strong>right</strong> favor the right criterion.
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-                <div className="bg-white rounded p-2 text-center">
-                  <span className="font-bold text-amber-700">=</span>
-                  <div className="text-amber-600">Equal</div>
-                </div>
-                <div className="bg-white rounded p-2 text-center">
-                  <span className="font-bold text-amber-700">3</span>
-                  <div className="text-amber-600">Slightly more</div>
-                </div>
-                <div className="bg-white rounded p-2 text-center">
-                  <span className="font-bold text-amber-700">5</span>
-                  <div className="text-amber-600">Moderately more</div>
-                </div>
-                <div className="bg-white rounded p-2 text-center">
-                  <span className="font-bold text-amber-700">7</span>
-                  <div className="text-amber-600">Strongly more</div>
-                </div>
-                <div className="bg-white rounded p-2 text-center">
-                  <span className="font-bold text-amber-700">9</span>
-                  <div className="text-amber-600">Extremely more</div>
+        {/* Two Column Layout: Data Panel + Comparison */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+          {/* LEFT: Data Panel showing both criteria info */}
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-gray-100 rounded-lg p-3">
+              <h3 className="font-semibold text-gray-800 text-sm mb-2 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Reference Data
+              </h3>
+              <p className="text-xs text-gray-500 mb-3">Review how each name scores on these criteria before deciding importance.</p>
+            </div>
+            {renderCriteriaDataPanel(left, 'blue')}
+            {renderCriteriaDataPanel(right, 'green')}
+          </div>
+
+          {/* RIGHT: Comparison Interface */}
+          <div className="lg:col-span-2">
+            {/* Scale Legend */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+              <div className="flex items-start gap-2">
+                <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <h4 className="font-semibold text-amber-900 mb-2">How to Compare</h4>
+                  <p className="text-sm text-amber-800 mb-3">
+                    Numbers on the <strong className="text-blue-700">left (blue)</strong> favor the left criterion,
+                    numbers on the <strong className="text-green-700">right (green)</strong> favor the right criterion.
+                  </p>
+                  <div className="grid grid-cols-5 gap-1 text-xs">
+                    <div className="bg-white rounded p-1.5 text-center">
+                      <span className="font-bold text-amber-700">=</span>
+                      <div className="text-amber-600">Equal</div>
+                    </div>
+                    <div className="bg-white rounded p-1.5 text-center">
+                      <span className="font-bold text-amber-700">3</span>
+                      <div className="text-amber-600">Slight</div>
+                    </div>
+                    <div className="bg-white rounded p-1.5 text-center">
+                      <span className="font-bold text-amber-700">5</span>
+                      <div className="text-amber-600">Moderate</div>
+                    </div>
+                    <div className="bg-white rounded p-1.5 text-center">
+                      <span className="font-bold text-amber-700">7</span>
+                      <div className="text-amber-600">Strong</div>
+                    </div>
+                    <div className="bg-white rounded p-1.5 text-center">
+                      <span className="font-bold text-amber-700">9</span>
+                      <div className="text-amber-600">Extreme</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h3 className="text-center text-lg font-semibold text-gray-700 mb-2">
-            Which criterion is MORE important to you?
-          </h3>
-          <p className="text-center text-sm text-gray-500 mb-6">
-            Click a number on the side of the criterion you prefer. Higher numbers = stronger preference.
-          </p>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-center text-lg font-semibold text-gray-700 mb-2">
+                Which criterion is MORE important to you?
+              </h3>
+              <p className="text-center text-sm text-gray-500 mb-6">
+                Click a number on the side of the criterion you prefer. Higher numbers = stronger preference.
+              </p>
 
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
-              current.favor === 'left' ? 'border-blue-500 bg-blue-100' : 'border-blue-200 bg-blue-50'
-            }`}>
-              <div className="text-xs text-blue-600 font-medium mb-1">← LEFT SIDE</div>
-              <div className="font-bold text-lg text-gray-900">{left.label}</div>
-              <div className="text-sm text-gray-600">{left.description}</div>
-            </div>
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
+                  current.favor === 'left' ? 'border-blue-500 bg-blue-100' : 'border-blue-200 bg-blue-50'
+                }`}>
+                  <div className="text-xs text-blue-600 font-medium mb-1">← LEFT SIDE (Blue buttons)</div>
+                  <div className="font-bold text-lg text-gray-900">{left.label}</div>
+                  <div className="text-sm text-gray-600">{left.description}</div>
+                  <div className="text-xs text-blue-600 mt-2">Best: {left.bestValue}</div>
+                </div>
 
-            <div className="text-gray-400 font-bold">vs</div>
+                <div className="text-gray-400 font-bold">vs</div>
 
-            <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
-              current.favor === 'right' ? 'border-green-500 bg-green-100' : 'border-green-200 bg-green-50'
-            }`}>
-              <div className="text-xs text-green-600 font-medium mb-1">RIGHT SIDE →</div>
-              <div className="font-bold text-lg text-gray-900">{right.label}</div>
-              <div className="text-sm text-gray-600">{right.description}</div>
-            </div>
-          </div>
+                <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
+                  current.favor === 'right' ? 'border-green-500 bg-green-100' : 'border-green-200 bg-green-50'
+                }`}>
+                  <div className="text-xs text-green-600 font-medium mb-1">RIGHT SIDE (Green buttons) →</div>
+                  <div className="font-bold text-lg text-gray-900">{right.label}</div>
+                  <div className="text-sm text-gray-600">{right.description}</div>
+                  <div className="text-xs text-green-600 mt-2">Best: {right.bestValue}</div>
+                </div>
+              </div>
 
           <div className="mt-6">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
@@ -607,10 +883,12 @@ export default function Home() {
                 </span>
               )}
               {current.favor === 'right' && (
-                <span className="text-blue-600 font-medium">
+                <span className="text-green-600 font-medium">
                   {right.label} is {ahpScale.find(s => s.value === current.value)?.label?.toLowerCase() || ''} more important
                 </span>
               )}
+            </div>
+          </div>
             </div>
           </div>
         </div>
@@ -895,7 +1173,7 @@ export default function Home() {
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="max-w-3xl mx-auto p-4 md:p-6">
+        <div className="max-w-6xl mx-auto p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
