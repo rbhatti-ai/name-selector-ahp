@@ -486,15 +486,57 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Scale Legend - Collapsible Help */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-start gap-2">
+            <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h4 className="font-semibold text-amber-900 mb-2">How to Compare</h4>
+              <p className="text-sm text-amber-800 mb-3">
+                Use the scale below to indicate how much more important one criterion is over the other.
+                Numbers on the <strong>left</strong> favor the left criterion, numbers on the <strong>right</strong> favor the right criterion.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+                <div className="bg-white rounded p-2 text-center">
+                  <span className="font-bold text-amber-700">=</span>
+                  <div className="text-amber-600">Equal</div>
+                </div>
+                <div className="bg-white rounded p-2 text-center">
+                  <span className="font-bold text-amber-700">3</span>
+                  <div className="text-amber-600">Slightly more</div>
+                </div>
+                <div className="bg-white rounded p-2 text-center">
+                  <span className="font-bold text-amber-700">5</span>
+                  <div className="text-amber-600">Moderately more</div>
+                </div>
+                <div className="bg-white rounded p-2 text-center">
+                  <span className="font-bold text-amber-700">7</span>
+                  <div className="text-amber-600">Strongly more</div>
+                </div>
+                <div className="bg-white rounded p-2 text-center">
+                  <span className="font-bold text-amber-700">9</span>
+                  <div className="text-amber-600">Extremely more</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="bg-gray-50 rounded-lg p-6">
-          <h3 className="text-center text-lg font-semibold text-gray-700 mb-6">
+          <h3 className="text-center text-lg font-semibold text-gray-700 mb-2">
             Which criterion is MORE important to you?
           </h3>
+          <p className="text-center text-sm text-gray-500 mb-6">
+            Click a number on the side of the criterion you prefer. Higher numbers = stronger preference.
+          </p>
 
           <div className="flex flex-col md:flex-row items-center gap-4">
             <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
-              current.favor === 'left' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              current.favor === 'left' ? 'border-blue-500 bg-blue-100' : 'border-blue-200 bg-blue-50'
             }`}>
+              <div className="text-xs text-blue-600 font-medium mb-1">← LEFT SIDE</div>
               <div className="font-bold text-lg text-gray-900">{left.label}</div>
               <div className="text-sm text-gray-600">{left.description}</div>
             </div>
@@ -502,8 +544,9 @@ export default function Home() {
             <div className="text-gray-400 font-bold">vs</div>
 
             <div className={`flex-1 w-full p-4 rounded-lg border-2 transition-all ${
-              current.favor === 'right' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              current.favor === 'right' ? 'border-green-500 bg-green-100' : 'border-green-200 bg-green-50'
             }`}>
+              <div className="text-xs text-green-600 font-medium mb-1">RIGHT SIDE →</div>
               <div className="font-bold text-lg text-gray-900">{right.label}</div>
               <div className="text-sm text-gray-600">{right.description}</div>
             </div>
@@ -524,25 +567,34 @@ export default function Home() {
                 const favor = isEqual ? 'equal' : (isLeft ? 'left' : 'right');
                 const isSelected = current.value === actualVal && current.favor === favor;
 
+                // Labels for each button
+                const labels = ['Extreme', 'Strong', 'Moderate', 'Slight', 'Equal', 'Slight', 'Moderate', 'Strong', 'Extreme'];
+
                 return (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setPairwiseComparisons({
-                        ...pairwiseComparisons,
-                        [key]: { value: actualVal, favor }
-                      });
-                    }}
-                    className={`w-9 h-9 md:w-10 md:h-10 rounded-lg font-semibold transition-all ${
-                      isSelected
-                        ? 'bg-blue-600 text-white'
-                        : isEqual
-                        ? 'bg-gray-300 text-gray-700 hover:bg-gray-400'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {isEqual ? '=' : val}
-                  </button>
+                  <div key={idx} className="flex flex-col items-center">
+                    <button
+                      onClick={() => {
+                        setPairwiseComparisons({
+                          ...pairwiseComparisons,
+                          [key]: { value: actualVal, favor }
+                        });
+                      }}
+                      className={`w-9 h-9 md:w-10 md:h-10 rounded-lg font-semibold transition-all ${
+                        isSelected
+                          ? 'bg-blue-600 text-white'
+                          : isEqual
+                          ? 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                          : isLeft
+                          ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      }`}
+                    >
+                      {isEqual ? '=' : val}
+                    </button>
+                    <span className={`text-xs mt-1 hidden md:block ${isSelected ? 'font-semibold' : ''} ${isLeft ? 'text-blue-600' : isEqual ? 'text-gray-500' : 'text-green-600'}`}>
+                      {labels[idx]}
+                    </span>
+                  </div>
                 );
               })}
             </div>
